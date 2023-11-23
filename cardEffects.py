@@ -3,3 +3,6 @@
 
 def BlackLotus():
     print("ブラックロータスだよ")
+
+def BrainStorm():
+    print("BrainStormだよ")

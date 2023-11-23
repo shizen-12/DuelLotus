@@ -4,7 +4,7 @@ from cardEffects import *
 # カードデータ集
 cards = [
     {'id': 1, 'name': 'BlackLotus', 'cost': 100, 'text': '3マナ出るよ' ,'effect': BlackLotus, 'img':'imgpath'},
-    {'id': 2, 'name': 'BrainStorm', 'cost': 100, 'text': 'text' ,'effect': BlackLotus, 'img':'imgpath'},
+    {'id': 2, 'name': 'BrainStorm', 'cost': 100, 'text': 'カードいっぱい引きたい' ,'effect': BrainStorm, 'img':'imgpath'},
 ]
 
 

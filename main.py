@@ -2,13 +2,15 @@ import pygame
 import sys
 from cardData import *
 from card import Card
+import os
 
 # Pygameの初期化
 pygame.init()
 
+SCREENRECT = pygame.Rect(0, 0, 1120, 630)
 # 画面の初期化  pygame.RESIZABLEは窓のサイズ変更可能設定ちょっと怪しいので消すかも
-screen = pygame.display.set_mode((1120, 630),pygame.RESIZABLE)
-
+screen1 = pygame.display.set_mode(SCREENRECT.size, pygame.RESIZABLE)
+screen = pygame.Surface(SCREENRECT.size)
 # タイトルの設定
 pygame.display.set_caption("DuelLotus")
 
@@ -17,12 +19,30 @@ clock = pygame.time.Clock()
 
 # フルスクリーンフラグの初期化
 fullscreen = False
+thisDisplay = pygame.display.Info()
+displayWidth = thisDisplay.current_w
+displayHeight = thisDisplay.current_h
+
 
 #カードの作成
-# c1 = card()
 c1 = createCard(1)
-c1.effect()
+c2 = createCard(2)
 
+# リストの作成
+hand = []
+graveyard = []
+library = []
+deck = [library, hand, graveyard]
+
+# カードをリストに入れてみる
+hand.append(c1)
+hand.append(c2)
+
+# カードsurfaceの作成
+cardsurface = pygame.Surface((189,267))
+image = pygame.image.load("img/BlackLotus.jpg")
+resizedImage = pygame.transform.scale(image,(189,267))
+cardsurface.blit(resizedImage,(0,0))
 
 
 while True:
@@ -40,9 +60,14 @@ while True:
         if event.key == pygame.K_F1:
             fullscreen = not fullscreen
             if fullscreen:
-                screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+                # screen_backup = screen.copy()
+                
+                screen1 = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+                pygame.transform.scale(screen, (pygame.display.get_surface().get_size()),pygame.display.get_surface())
+                # screen.blit(screen_backup, (0, 0))
             else:
-                screen = pygame.display.set_mode((1120, 630))
+                screen1 = pygame.display.set_mode(SCREENRECT.size)
+                screen1.blit(screen,(0,0))
         # ESCキーだったらゲーム終了
         if event.key == pygame.K_ESCAPE:
             break
@@ -54,6 +79,8 @@ while True:
     text1 = c1.name
     text_surface = font1.render(text1, True, (0,0,255))
     screen.blit(text_surface, (100,100))
+    screen.blit(cardsurface,(300,300))
+
     # 画面を更新
     pygame.display.update()
 
