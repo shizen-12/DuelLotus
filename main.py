@@ -9,8 +9,10 @@ pygame.init()
 
 SCREENRECT = pygame.Rect(0, 0, 1120, 630)
 # 画面の初期化
-display = pygame.display.set_mode(SCREENRECT.size)
-screen = pygame.Surface(SCREENRECT.size)
+display = pygame.display.set_mode(SCREENRECT.size)  #最終表示用のsurface
+screen = pygame.Surface(SCREENRECT.size)            #拡大縮小対応用の描画領域、ここに描画する
+display.blit(screen,(0,0))
+
 # タイトルの設定
 pygame.display.set_caption("DuelLotus")
 
@@ -44,9 +46,9 @@ image = pygame.image.load("img/BlackLotus.jpg").convert()
 resizedImage = pygame.transform.scale(image,(189,267))
 cardsurface.blit(resizedImage,(0,0))
 
-
 while True:
-
+    if not fullscreen:
+        display.blit(screen,(0,0))
     # イベント処理
     for event in pygame.event.get():
         # ウィンドウの閉じるボタンがクリックされたら終了
@@ -56,30 +58,23 @@ while True:
         
     # キーイベント系処理
     if event.type == pygame.KEYDOWN:
+        keys = pygame.key.get_pressed()  # キーの状態を取得
         # F1キーが押されたら全画面表示とウィンドウ表示を切り替え
-        if event.key == pygame.K_F1:
+        if keys[pygame.K_F1]:  # F1キーが押されているかチェック
             fullscreen = not fullscreen
             if fullscreen:
-                # screen_backup = screen.copy()
                 display = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
-                #get_surfaceは今のdisplayのsurfaceを取得
                 pygame.transform.scale(screen, (pygame.display.get_surface().get_size()),pygame.display.get_surface())
-                #display.blit(screen_backup, (0, 0))
             else:
                 display = pygame.display.set_mode(SCREENRECT.size)
                 display.blit(screen,(0,0))
-        # ESCキーだったらゲーム終了
-        if event.key == pygame.K_ESCAPE:
+        if keys[pygame.K_ESCAPE]:  # ESCキーが押されているかチェック
             break
-
 
     # 画面全体を塗りつぶす
     screen.fill((180,255,255))
-    font1 = pygame.font.SysFont("Arial", 50)
-    text1 = c1.name
-    text_surface = font1.render(text1, True, (0,0,255))
-    screen.blit(text_surface, (100,100))
     screen.blit(cardsurface,(300,300))
+
 
     # 画面を更新
     pygame.display.update()
