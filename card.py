@@ -2,10 +2,9 @@ import pygame
 from pygame.locals import *
 
 class Card(pygame.sprite.Sprite):
-    width = 189
-    height = 267
-    x = 300
-    y = 300
+
+    x = 100
+    y = 480
     def __init__(self, id, name, cost, text, effect, imgpath):
         pygame.sprite.Sprite.__init__(self)
         self.id = id
@@ -14,9 +13,12 @@ class Card(pygame.sprite.Sprite):
         self.text = text
         self.effect = effect
         self.imgpath = imgpath
+        self.width = 170
+        self.height = 240       
         self.image = pygame.image.load(self.imgpath).convert()
-        resizedImage = pygame.transform.scale(self.image,(self.width,self.height))
+        self.image = pygame.transform.scale(self.image,(self.width,self.height))
         self.rect = Rect(self.x, self.y, self.width, self.height)   #spriteの表示位置
+
         self.vx = 0     #x軸の移動速度
         self.vy = 0     #y軸の移動速度
 

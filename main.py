@@ -3,11 +3,11 @@ import sys
 from cardData import *
 from card import Card
 import os
-
+from player import *
 # Pygameの初期化
 pygame.init()
 
-SCREENRECT = pygame.Rect(0, 0, 1120, 630)
+SCREENRECT = pygame.Rect(0, 0, 1280, 720)
 # 画面の初期化
 display = pygame.display.set_mode(SCREENRECT.size)  #最終表示用のsurface
 screen = pygame.Surface(SCREENRECT.size)            #拡大縮小対応用の描画領域、ここに描画する
@@ -30,11 +30,27 @@ background = pygame.image.load('img/bg.jfif')
 background = pygame.transform.scale(background, (SCREENRECT.size))
 screen.blit(background,(0,0))
 
+# プレイヤーデータ画面表示用
+manaValue = 1    #初期マナ
+lifeValue = 20   #初期ライフ
+manaInfo = mana(manaValue)
+lifeInfo = life(lifeValue)
+playerInfo = pygame.sprite.Group()
+playerInfo.add(manaInfo)
+playerInfo.add(lifeInfo)
+
 #カードの作成
 c1 = createCard(1)
 c2 = createCard(2)
+c3 = createCard(1)
+c4 = createCard(2)
+c5 = createCard(2)
+c6 = createCard(2)
+c7 = createCard(2)
 
 # リストの作成
+handAreaSize = 1080
+handAreaStartX = 100
 hand = []
 graveyard = []
 library = []
@@ -44,15 +60,20 @@ deck = [library, hand, graveyard]
 hand.append(c1)
 hand.append(c2)
 
-# カードsurfaceの作成
-cardsurface = pygame.Surface((189,267))
-image = pygame.image.load("img/BlackLotus.jpg").convert()
-resizedImage = pygame.transform.scale(image,(189,267))
-cardsurface.blit(resizedImage,(0,0))
-# hand[0].createSurface()
-
 handGroup = pygame.sprite.Group()
 handGroup.add(c1)
+handGroup.add(c2)
+handGroup.add(c3)
+handGroup.add(c4)
+handGroup.add(c5)
+handGroup.add(c6)
+handGroup.add(c7)
+
+# handGroupの配置を変更する処理。
+# for i文と同じ効果がある。nはインデックス cardは要素が入る。
+for n,card in enumerate(handGroup):
+    card.rect.x = handAreaSize/(len(handGroup)+1)*(n+1)-card.width/2+handAreaStartX
+
 while True:
     if not fullscreen:
         display.blit(screen,(0,0))
@@ -80,10 +101,13 @@ while True:
 
     # 背景描画
     screen.blit(background,(0,0))
-    screen.blit(cardsurface,(300,300))
+    # screen.blit(cardsurface,(300,300))
     # スプライトの更新と描画
+    
     handGroup.update()
     handGroup.draw(screen)
+    playerInfo.update()
+    playerInfo.draw(screen)
 
     # 画面を更新
     pygame.display.update()
