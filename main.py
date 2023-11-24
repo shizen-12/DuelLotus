@@ -25,6 +25,10 @@ thisDisplay = pygame.display.Info() #ユーザーのディスプレイサイズ�
 displayWidth = thisDisplay.current_w
 displayHeight = thisDisplay.current_h
 
+# 背景画像をロードしてスケーリング
+background = pygame.image.load('img/bg.jfif')
+background = pygame.transform.scale(background, (SCREENRECT.size))
+screen.blit(background,(0,0))
 
 #カードの作成
 c1 = createCard(1)
@@ -45,7 +49,10 @@ cardsurface = pygame.Surface((189,267))
 image = pygame.image.load("img/BlackLotus.jpg").convert()
 resizedImage = pygame.transform.scale(image,(189,267))
 cardsurface.blit(resizedImage,(0,0))
+# hand[0].createSurface()
 
+handGroup = pygame.sprite.Group()
+handGroup.add(c1)
 while True:
     if not fullscreen:
         display.blit(screen,(0,0))
@@ -71,10 +78,12 @@ while True:
         if keys[pygame.K_ESCAPE]:  # ESCキーが押されているかチェック
             break
 
-    # 画面全体を塗りつぶす
-    screen.fill((180,255,255))
+    # 背景描画
+    screen.blit(background,(0,0))
     screen.blit(cardsurface,(300,300))
-
+    # スプライトの更新と描画
+    handGroup.update()
+    handGroup.draw(screen)
 
     # 画面を更新
     pygame.display.update()

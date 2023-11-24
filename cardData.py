@@ -3,15 +3,10 @@ from cardEffects import *
 
 # カードデータ集
 cards = [
-    {'id': 1, 'name': 'BlackLotus', 'cost': 100, 'text': '3マナ出るよ' ,'effect': BlackLotus, 'img':'imgpath'},
-    {'id': 2, 'name': 'BrainStorm', 'cost': 100, 'text': 'カードいっぱい引きたい' ,'effect': BrainStorm, 'img':'imgpath'},
+    {'id': 1, 'name': 'BlackLotus', 'cost': 100, 'text': '3マナ出るよ' ,'effect': BlackLotus, 'img':'img/BlackLotus.jpg'},
+    {'id': 2, 'name': 'Brainstorm', 'cost': 100, 'text': 'カードいっぱい引きたい' ,'effect': Brainstorm, 'img':'img/Brainstorm.jpg'},
 ]
 
-
-# # 関数を呼び出す
-# cards[0]["effect"]()
-# print(cards[0]["effect"])
-# print("testttt")
 
 # cardを探し出す関数
 def get_card(id):

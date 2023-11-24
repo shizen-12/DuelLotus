@@ -4,5 +4,5 @@
 def BlackLotus():
     print("ブラックロータスだよ")
 
-def BrainStorm():
+def Brainstorm():
     print("BrainStormだよ")
