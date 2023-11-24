@@ -8,8 +8,8 @@ import os
 pygame.init()
 
 SCREENRECT = pygame.Rect(0, 0, 1120, 630)
-# 画面の初期化  pygame.RESIZABLEは窓のサイズ変更可能設定ちょっと怪しいので消すかも
-screen1 = pygame.display.set_mode(SCREENRECT.size, pygame.RESIZABLE)
+# 画面の初期化
+display = pygame.display.set_mode(SCREENRECT.size)
 screen = pygame.Surface(SCREENRECT.size)
 # タイトルの設定
 pygame.display.set_caption("DuelLotus")
@@ -19,7 +19,7 @@ clock = pygame.time.Clock()
 
 # フルスクリーンフラグの初期化
 fullscreen = False
-thisDisplay = pygame.display.Info()
+thisDisplay = pygame.display.Info() #ユーザーのディスプレイサイズの取得
 displayWidth = thisDisplay.current_w
 displayHeight = thisDisplay.current_h
 
@@ -40,7 +40,7 @@ hand.append(c2)
 
 # カードsurfaceの作成
 cardsurface = pygame.Surface((189,267))
-image = pygame.image.load("img/BlackLotus.jpg")
+image = pygame.image.load("img/BlackLotus.jpg").convert()
 resizedImage = pygame.transform.scale(image,(189,267))
 cardsurface.blit(resizedImage,(0,0))
 
@@ -61,13 +61,13 @@ while True:
             fullscreen = not fullscreen
             if fullscreen:
                 # screen_backup = screen.copy()
-                
-                screen1 = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+                display = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+                #get_surfaceは今のdisplayのsurfaceを取得
                 pygame.transform.scale(screen, (pygame.display.get_surface().get_size()),pygame.display.get_surface())
-                # screen.blit(screen_backup, (0, 0))
+                #display.blit(screen_backup, (0, 0))
             else:
-                screen1 = pygame.display.set_mode(SCREENRECT.size)
-                screen1.blit(screen,(0,0))
+                display = pygame.display.set_mode(SCREENRECT.size)
+                display.blit(screen,(0,0))
         # ESCキーだったらゲーム終了
         if event.key == pygame.K_ESCAPE:
             break
