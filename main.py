@@ -3,7 +3,9 @@ import sys
 from cardData import *
 from card import Card
 import os
-from player import *
+from info import *
+from deck import *
+
 # Pygameの初期化
 pygame.init()
 
@@ -21,9 +23,6 @@ clock = pygame.time.Clock()
 
 # フルスクリーンフラグの初期化
 fullscreen = False
-thisDisplay = pygame.display.Info() #ユーザーのディスプレイサイズの取得
-displayWidth = thisDisplay.current_w
-displayHeight = thisDisplay.current_h
 
 # 背景画像をロードしてスケーリング
 background = pygame.image.load('img/bg.jfif')
@@ -33,52 +32,55 @@ screen.blit(background,(0,0))
 # プレイヤーデータ画面表示用
 manaValue = 1    #初期マナ
 lifeValue = 20   #初期ライフ
-manaInfo = mana(manaValue)
-lifeInfo = life(lifeValue)
+libraryValue = 30   #初期ライブラリー
+graveyardValue = 0  #初期墓地
+manaInfo = Mana(manaValue)
+lifeInfo = Life(lifeValue)
+libraryInfo = Library(libraryValue)
+graveyardInfo = Graveyard(graveyardValue)
+player = Player()
 playerInfo = pygame.sprite.Group()
 playerInfo.add(manaInfo)
 playerInfo.add(lifeInfo)
+playerInfo.add(libraryInfo)
+playerInfo.add(graveyardInfo)
+playerInfo.add(player)
 
-
-
-#カードの作成
-c1 = createCard(1)
-c2 = createCard(2)
-c3 = createCard(1)
-c4 = createCard(2)
-c5 = createCard(2)
-c6 = createCard(2)
-c7 = createCard(2)
+# エネミーデータ画面表示用
+enemy1 = Enemy()
+enemyLife = 20
+eLifeInfo = EnemyLife(enemyLife)
+enemyInfo = pygame.sprite.Group()
+enemyInfo.add(enemy1)
+enemyInfo.add(eLifeInfo)
 
 # リストの作成
 handAreaSize = 1080
 handAreaStartX = 100
-hand = []
+handGroup = pygame.sprite.Group()
 graveyard = []
 library = []
-deck = [library, hand, graveyard]
-
-# カードをリストに入れてみる
-hand.append(c1)
-hand.append(c2)
-
-handGroup = pygame.sprite.Group()
-handGroup.add(c1)
-handGroup.add(c2)
-handGroup.add(c3)
-handGroup.add(c4)
-handGroup.add(c5)
-handGroup.add(c6)
-handGroup.add(c7)
+deck = [library, handGroup, graveyard]
+decklist = loadDeck()
+for n in decklist:
+    library.append(createCard(n))
 
 # handGroupの配置を変更する処理。
 # for i文と同じ効果がある。nはインデックス cardは要素が入る。
-for n,card in enumerate(handGroup):
-    card.rect.x = handAreaSize/(len(handGroup)+1)*(n+1)-card.width/2+handAreaStartX
+def handSort():
+    for n,card in enumerate(handGroup):
+        card.rect.x = handAreaSize/(len(handGroup)+1)*(n+1)-card.width/2+handAreaStartX
+
+def drawCard():
+    if len(library) > 0:
+        item = library.pop(0)
+        handGroup.add(item)
+        print("drawcardしたよ")
+
 
 while True:
-    if not fullscreen:
-        display.blit(screen,(0,0))
+    display.blit(screen,(0,0))
+    
     # イベント処理
     for event in pygame.event.get():
         # ウィンドウの閉じるボタンがクリックされたら終了
@@ -88,30 +90,37 @@ while True:
         
     # キーイベント系処理
     if event.type == pygame.KEYDOWN:
-        keys = pygame.key.get_pressed()  # キーの状態を取得
+        # print("キーが押された")
+        if event.key == pygame.K_F1:
         # F1キーが押されたら全画面表示とウィンドウ表示を切り替え
-        if keys[pygame.K_F1]:  # F1キーが押されているかチェック
             fullscreen = not fullscreen
             if fullscreen:
-                display = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
-                pygame.transform.scale(screen, (pygame.display.get_surface().get_size()),pygame.display.get_surface())
+                display = pygame.display.set_mode(SCREENRECT.size,pygame.FULLSCREEN)
             else:
                 display = pygame.display.set_mode(SCREENRECT.size)
-                display.blit(screen,(0,0))
-        if keys[pygame.K_ESCAPE]:  # ESCキーが押されているかチェック
+            
+        if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
             break
+        if event.key == pygame.K_LSHIFT:
+            drawCard()
+
 
     # 背景描画
     screen.blit(background,(0,0))
 
     lifeInfo.life += 1
     manaInfo.manaCurrent += 1
+    libraryInfo.library +=1
+    graveyardInfo.graveyard +=1
 
     # スプライトの更新と描画
+    handSort()
     handGroup.update()
     handGroup.draw(screen)
     playerInfo.update()
     playerInfo.draw(screen)
+    enemyInfo.update()
+    enemyInfo.draw(screen)
 
     # 画面を更新
     pygame.display.update()
