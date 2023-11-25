@@ -39,6 +39,8 @@ playerInfo = pygame.sprite.Group()
 playerInfo.add(manaInfo)
 playerInfo.add(lifeInfo)
 
+
+
 #カードの作成
 c1 = createCard(1)
 c2 = createCard(2)
@@ -101,9 +103,11 @@ while True:
 
     # 背景描画
     screen.blit(background,(0,0))
-    # screen.blit(cardsurface,(300,300))
+
+    lifeInfo.life += 1
+    manaInfo.manaCurrent += 1
+
     # スプライトの更新と描画
-    
     handGroup.update()
     handGroup.draw(screen)
     playerInfo.update()
