@@ -28,8 +28,7 @@ class Card(pygame.sprite.Sprite):
         self.vx = 0     #x軸の移動速度
         self.vy = 0     #y軸の移動速度
         self.update()
-        print(self.text)
-
+        
     def effect(self):
         # effect関数の実装
         pass

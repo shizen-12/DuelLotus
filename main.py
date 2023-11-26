@@ -3,6 +3,7 @@ import sys
 from cardData import *
 from info import *
 from deck import *
+from gameMaster import *
 
 # Pygameの初期化
 pygame.init()
@@ -25,6 +26,11 @@ fullscreen = False
 background = pygame.image.load('img/bg1.jpg')
 background = pygame.transform.scale(background, (SCREENRECT.size))
 screen.blit(background,(0,0))
+
+#ゲームマスターの作成
+gm = GM()
+gm.battle = True
+# print(pygame.font.get_fonts())
 
 #プレイヤーとエネミーの作成
 pData = PlayerData()
@@ -78,7 +84,7 @@ dt = 0
 
 
 
-while True:
+while gm.battle == True:
     # 背景描画
     screen.blit(background,(0,0))
 
@@ -87,7 +93,7 @@ while True:
     pData.handGroup.update()
     # changeLayer()
     pData.handGroup.draw(screen)
-    # handHighlightedDraw()
+    handHighlightedDraw()
     pData.playerInfo.update(pData)
     pData.playerInfo.draw(screen)
     eData.enemyInfo.update(eData)

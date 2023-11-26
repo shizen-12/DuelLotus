@@ -13,7 +13,7 @@ class GameInfo(pygame.sprite.Sprite):
         self.original_image = pygame.image.load(image_path).convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, size)
         self.image = self.original_image.copy()
-        self.font = pygame.font.SysFont(fontName, font_size)
+        self.font = pygame.font.SysFont(fontName, font_size,bold=True)
         self.update(pdata)
 
     def update(self,charadata):   #ざっくりいうとそれぞれの中心をあわせて、イメージを貼り直してその上にテキストを更新して貼り直している
@@ -32,7 +32,7 @@ class Life(GameInfo):
         self.pos = (300,400)    #位置x,y
         self.size = (180,60)   #サイズw,h
         self.fontSize = 40
-        self.fontName = "Impact"
+        self.fontName = "palatinolinotype"
         super().__init__(self.imgpath, self.pos, self.size, self.fontSize, self.fontName,pdata)
     def text(self,player):
         return f"{player.life}"
@@ -40,35 +40,35 @@ class Life(GameInfo):
 class Mana(GameInfo):
     def __init__(self,pdata):
         self.imgpath = "img/mana_blue.png"
-        self.pos = (10, 420)    #位置x,y
+        self.pos = (10, 400)    #位置x,y
         self.size = (180, 60)   #サイズw,h
-        self.fontSize = 40
-        self.fontName = "Impact"
+        self.fontSize = 32
+        self.fontName = "palatinolinotype"
         super().__init__(self.imgpath, self.pos, self.size, self.fontSize, self.fontName,pdata)
     def text(self,player):
-        return f"{player.mana} / {player.manaMax}"
+        return f"mana {player.mana} / {player.manaMax}"
 
 class Library(GameInfo):
     def __init__(self,pdata):
         self.imgpath = "img/library.png"
-        self.pos = (10, 500)    #位置x,y
+        self.pos = (10, 480)    #位置x,y
         self.size = (120, 60)   #サイズw,h
-        self.fontSize = 40
-        self.fontName = "Impact"
+        self.fontSize = 24
+        self.fontName = "palatinolinotype"
         super().__init__(self.imgpath, self.pos, self.size, self.fontSize, self.fontName,pdata)
     def text(self,player):
-        return f"{len(player.library)}"
+        return f"deck {len(player.library)}"
     
 class Graveyard(GameInfo):
     def __init__(self,pdata):
         self.imgpath = "img/graveyard.png"
-        self.pos = (10, 570)    #位置x,y
+        self.pos = (10, 550)    #位置x,y
         self.size = (120, 60)   #サイズw,h
-        self.fontSize = 40
-        self.fontName = "Impact"
+        self.fontSize = 24
+        self.fontName = "palatinolinotype"
         super().__init__(self.imgpath, self.pos, self.size, self.fontSize, self.fontName,pdata)
     def text(self,player):
-        return f"{len(player.graveyard)}"
+        return f"discard {len(player.graveyard)}"
     
 # プレイヤーは文字データをスプライト上に表示しないのでGameInfoクラスを継承しない
 class Player(pygame.sprite.Sprite):
@@ -98,7 +98,7 @@ class EnemyLife(GameInfo):
         self.pos = (800,400)    #位置x,y
         self.size = (180,60)   #サイズw,h
         self.fontSize = 40
-        self.fontName = "Impact"
+        self.fontName = "palatinolinotype"
         super().__init__(self.imgpath, self.pos, self.size, self.fontSize, self.fontName,edata)
     def text(self,edata):
         return f"{edata.life}"
@@ -108,11 +108,11 @@ class EnemyMana(GameInfo):
         self.imgpath = "img/mana_blue.png"
         self.pos = (1090, 50)    #位置x,y
         self.size = (180, 60)   #サイズw,h
-        self.fontSize = 40
-        self.fontName = "Impact"
+        self.fontSize = 32
+        self.fontName = "palatinolinotype"
         super().__init__(self.imgpath, self.pos, self.size, self.fontSize, self.fontName,edata)
     def text(self,edata):
-        return f"{edata.mana} / {edata.manaMax}"
+        return f"mana {edata.mana} / {edata.manaMax}"
     
 
 class PlayerData():
