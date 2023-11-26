@@ -15,8 +15,9 @@ class Card(pygame.sprite.Sprite):
         self.imgpath = imgpath
         self.width = 170
         self.height = 240       
-        self.image = pygame.image.load(self.imgpath).convert()
-        self.image = pygame.transform.scale(self.image,(self.width,self.height))
+        self.original_image = pygame.image.load(self.imgpath).convert()
+        self.original_image = pygame.transform.scale(self.original_image,(self.width,self.height))
+        self.image = self.original_image.copy()
         self.rect = Rect(self.x, self.y, self.width, self.height)   #spriteの表示位置
 
         self.vx = 0     #x軸の移動速度
@@ -26,13 +27,24 @@ class Card(pygame.sprite.Sprite):
         # effect関数の実装
         pass
 
-    def update(self):
-        self.rect.move_ip(self.vx, self.vy)
-        # if self.rect.left < 0 or self.rect.right > SURFACE.width:
-        #     self.vx = -self.vx
-        # if self.rect.top < 0 or self.rect.bottom > SURFACE.height:
-        #     self.vy = -self.vy
-        # self.rect = self.rect.clamp(SURFACE)
+    def selected(self):
+        ratio = 1.1 #拡大倍率
+        self.image = pygame.transform.scale(self.image,(self.width*ratio,self.height*ratio))
+        if self.rect.y > self.y - self.height * (ratio-1):
+            self.rect.y -= self.height * (ratio-1)
+    
+    def notSelected(self):
+        self.image = self.original_image.copy()
+        self.rect.y = self.y
+
+    def update(self, mousePos):
+        # if self.x < mousePos(0) < self.x + self.width and self.y < mousePos(1) < self.y + self.height :
+        # 上をスマートにしたやつが下
+        if self.rect.collidepoint(mousePos):
+            self.selected()
+        else :
+            self.notSelected()
+
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
