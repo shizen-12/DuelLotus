@@ -3,8 +3,13 @@ from cardEffects import *
 
 # カードデータ集
 cards = [
-    {'id': 1, 'name': 'BlackLotus', 'cost': 100, 'text': '3マナ出るよ' ,'effect': BlackLotus, 'img':'img/BlackLotus.jpg'},
-    {'id': 2, 'name': 'Brainstorm', 'cost': 100, 'text': 'カードいっぱい引きたい' ,'effect': Brainstorm, 'img':'img/Brainstorm.jpg'},
+    {'id': 1, 'name': 'MirageLotus', 'cost': 0, 'text': MirageLotus_text ,'effect': MirageLotus, 'img':'img/miragelotus.png'},
+    {'id': 2, 'name': 'Brainstorm', 'cost': 1, 'text': Brainstorm_text ,'effect': Brainstorm, 'img':'img/magicitem.png'},
+    {'id': 3, 'name': 'FireBall', 'cost': 2, 'text': FireBall_text ,'effect': FireBall, 'img':'img/fireball.png'},
+    {'id': 4, 'name': 'LifeRoad', 'cost': 3, 'text': LifeRoad_text ,'effect': LifeRoad, 'img':'img/liferoad.png'},
+
+
+
 ]
 
 

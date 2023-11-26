@@ -3,6 +3,7 @@ from pygame.locals import *
 from deck import *
 from cardData import *
 from card import *
+import random
 
 # スプライトデータ郡、スプライトに文字列を配置するクラスの継承元
 class GameInfo(pygame.sprite.Sprite):
@@ -28,7 +29,7 @@ class GameInfo(pygame.sprite.Sprite):
 class Life(GameInfo):
     def __init__(self,pdata):
         self.imgpath = "img/life.png"
-        self.pos = (300,420)    #位置x,y
+        self.pos = (300,400)    #位置x,y
         self.size = (180,60)   #サイズw,h
         self.fontSize = 40
         self.fontName = "Impact"
@@ -74,7 +75,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.imgpath = "img/player.jpg"
-        self.pos = (250, 140)    #位置x,y
+        self.pos = (250, 120)    #位置x,y
         self.size = (280, 280)   #サイズw,h
         self.rect = pygame.Rect(self.pos, self.size)
         self.image = pygame.image.load(self.imgpath).convert_alpha()
@@ -85,7 +86,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.imgpath = "img/enemy1.png"
-        self.pos = (750, 140)    #位置x,y
+        self.pos = (750, 120)    #位置x,y
         self.size = (280, 280)   #サイズw,h
         self.rect = pygame.Rect(self.pos, self.size)
         self.image = pygame.image.load(self.imgpath).convert_alpha()
@@ -94,7 +95,7 @@ class Enemy(pygame.sprite.Sprite):
 class EnemyLife(GameInfo):
     def __init__(self, edata):
         self.imgpath = "img/life.png"
-        self.pos = (800,420)    #位置x,y
+        self.pos = (800,400)    #位置x,y
         self.size = (180,60)   #サイズw,h
         self.fontSize = 40
         self.fontName = "Impact"
@@ -127,6 +128,7 @@ class PlayerData():
         decklist = loadDeck()
         for n in decklist:
             self.library.append(createCard(n))
+        random.shuffle(self.library)    #libraryの要素をランダム化、デフォルトでこんなメソッドあるなんてすごい
         self.playerInfo = pygame.sprite.Group()
     def createInfo(self):    
         self.playerInfo.add(Mana(self))

@@ -22,7 +22,7 @@ clock = pygame.time.Clock()
 fullscreen = False
 
 # 背景画像をロードしてスケーリング
-background = pygame.image.load('img/bg.jfif')
+background = pygame.image.load('img/bg1.jpg')
 background = pygame.transform.scale(background, (SCREENRECT.size))
 screen.blit(background,(0,0))
 
@@ -65,10 +65,13 @@ def handOnClick():
             card.select = True
 
 def doubleClickCheck():
-    for card in pData.handGroup:
+    for card in list(pData.handGroup):  #list(pData.handGroup)で一時的なコピー作成
         if card.rect.collidepoint(mousePos) and card.select == True:
-            card.effect()
-
+            if pData.mana >= card.cost:
+                card.effect(pData,eData)
+                pData.mana -= card.cost
+                pData.handGroup.remove(card)  # 元のリストからカードを削除
+                pData.graveyard.append(card)  # graveyardリストにカードを追加
 
 timer = 0
 dt = 0
@@ -117,7 +120,7 @@ while True:
         if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
             break
         if event.key == pygame.K_LSHIFT:
-            drawCard(pData.deck)
+            drawCard(pData,eData)
         if event.key == pygame.K_LEFT:
             print(event.key)
         if event.key == pygame.K_RIGHT:
