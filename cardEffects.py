@@ -14,4 +14,4 @@ def BlackLotus():
     print("ブラックロータスだよ")
 
 def Brainstorm():
-    drawCard()
+    print("brainstormだよ")

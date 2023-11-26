@@ -121,7 +121,8 @@ class PlayerData():
         self.manaMax = 1
         self.graveyard = []
         self.library = []
-        self.handGroup = pygame.sprite.LayeredUpdates()
+        self.handGroup = pygame.sprite.Group()
+        self.handGroupLayer = pygame.sprite.LayeredUpdates()
         self.deck = [self.library, self.handGroup, self.graveyard]
         decklist = loadDeck()
         for n in decklist:

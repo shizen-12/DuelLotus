@@ -2,7 +2,9 @@ import pygame
 from pygame.locals import *
 
 class Card(pygame.sprite.Sprite):
-
+    highlight = False
+    select = False
+    
     x = 100
     y = 480
     def __init__(self, id, name, cost, text, effect, imgpath):
@@ -14,9 +16,13 @@ class Card(pygame.sprite.Sprite):
         self.effect = effect
         self.imgpath = imgpath
         self.width = 170
-        self.height = 240       
+        self.height = 240
+        self.prev_select = self.select
+        self.prev_highlight = self.highlight
         self.original_image = pygame.image.load(self.imgpath).convert()
         self.original_image = pygame.transform.scale(self.original_image,(self.width,self.height))
+        self.selected_image = pygame.image.load("img/select.png").convert_alpha()
+        self.selected_image = pygame.transform.scale(self.selected_image,(40,40))
         self.image = self.original_image.copy()
         self.rect = Rect(self.x, self.y, self.width, self.height)   #spriteの表示位置
 
@@ -27,24 +33,27 @@ class Card(pygame.sprite.Sprite):
         # effect関数の実装
         pass
 
-    def selected(self):
-        ratio = 1.1 #拡大倍率
-        self.image = pygame.transform.scale(self.image,(self.width*ratio,self.height*ratio))
-        if self.rect.y > self.y - self.height * (ratio-1):
-            self.rect.y -= self.height * (ratio-1)
+    def highlighted(self):
+        if self.highlight == True:
+            ratio = 1.1 #拡大倍率
+            self.image = pygame.transform.scale(self.image,(self.width*ratio,self.height*ratio))
+            if self.rect.y > self.y - self.height * (ratio-1):
+                self.rect.y -= self.height * (ratio-1)
+        else:
+            self.rect.y = self.y
     
-    def notSelected(self):
-        self.image = self.original_image.copy()
-        self.rect.y = self.y
+    def selected(self):
+        if self.select == True:
+            self.image.blit(self.selected_image,(0,self.image.get_height()-40))
 
-    def update(self, mousePos):
-        # if self.x < mousePos(0) < self.x + self.width and self.y < mousePos(1) < self.y + self.height :
-        # 上をスマートにしたやつが下
-        if self.rect.collidepoint(mousePos):
+
+    def update(self):
+        if self.select != self.prev_select or self.highlight != self.prev_highlight:
+            self.image = self.original_image.copy()
+            self.highlighted()
             self.selected()
-        else :
-            self.notSelected()
-
+        self.prev_select = self.select
+        self.prev_highlight = self.height
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)

@@ -34,6 +34,8 @@ eData.createInfo()
 
 #マウス座標
 mousePos = (0,0)
+mouse_down = False
+mouse_clicked = False
 
 # handGroupの配置を変更する処理。
 # for i文と同じ効果がある。nはインデックス cardは要素が入る。
@@ -42,18 +44,47 @@ handAreaStartX = 100
 def handSort():
     for n,card in enumerate(pData.handGroup):
         card.rect.x = handAreaSize/(len(pData.handGroup)+1)*(n+1)-card.width/2+handAreaStartX
+        if card.rect.collidepoint(mousePos) and mousePos[0] < handAreaSize/(len(pData.handGroup)+1)*(n+2)-card.width/2+handAreaStartX:
+            card.highlight = True
+        elif card.rect.collidepoint(mousePos) and n == len(pData.handGroup) -1:
+            card.highlight = True
+        else:
+            card.highlight = False
+def handHighlightedDraw():
+    for card in pData.handGroup:
+        if card.highlight == True:
+            screen.blit(card.image, card.rect)
+
+def handOnClick():
+    # 一度選択を全解除
+    for card in pData.handGroup:
+        card.select = False
+    # その後ハイライトされていたら選択状態に変更
+    for card in pData.handGroup:
+        if card.highlight == True:
+            card.select = True
+
+def doubleClickCheck():
+    for card in pData.handGroup:
+        if card.rect.collidepoint(mousePos) and card.select == True:
+            card.effect()
+
+
+timer = 0
+dt = 0
 
 
 
 while True:
     # 背景描画
     screen.blit(background,(0,0))
-    pData.life += 1
 
     # スプライトの更新と描画
     handSort()
-    pData.handGroup.update(mousePos)
+    pData.handGroup.update()
+    # changeLayer()
     pData.handGroup.draw(screen)
+    # handHighlightedDraw()
     pData.playerInfo.update(pData)
     pData.playerInfo.draw(screen)
     eData.enemyInfo.update(eData)
@@ -95,7 +126,31 @@ while True:
     # ここからマウス系処理
     if event.type == MOUSEMOTION:
         mousePos = pygame.mouse.get_pos()
+    if event.type == MOUSEBUTTONDOWN:
+        if event.button == 1:   #左クリック
+            if not mouse_down:
+                mouse_down = True
+                mouse_clicked = True
+                if timer == 0:  # 最初のクリック
+                    timer = 0.001  # タイマーを開始
+                elif timer < 0.25:  #ダブルクリックの感覚
+                    doubleClickCheck()
+                    timer = 0
+    if event.type == MOUSEBUTTONUP:
+        if event.button == 1:
+            mouse_down = False
 
+    # 最初のクリック後にタイマーを増加
+    if timer != 0:
+        timer += dt
+    if timer >= 0.25:
+        timer = 0
+
+    dt = clock.tick(60) / 1000  #1Fごとに16msくらい0.016くらい加算されるよ
+
+    if mouse_clicked:
+        handOnClick()
+        mouse_clicked = False
 
 #while文を抜けたらゲーム終了
 pygame.quit()
