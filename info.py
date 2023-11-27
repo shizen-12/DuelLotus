@@ -91,6 +91,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.pos, self.size)
         self.image = pygame.image.load(self.imgpath).convert_alpha()
         self.image = pygame.transform.scale(self.image, self.size)
+    
 
 class EnemyLife(GameInfo):
     def __init__(self, edata):
@@ -125,7 +126,7 @@ class PlayerData():
         self.handGroup = pygame.sprite.Group()
         self.handGroupLayer = pygame.sprite.LayeredUpdates()
         self.deck = [self.library, self.handGroup, self.graveyard]
-        decklist = loadDeck()
+        decklist = loadDeck("save.json")
         for n in decklist:
             self.library.append(createCard(n))
         random.shuffle(self.library)    #libraryの要素をランダム化、デフォルトでこんなメソッドあるなんてすごい
@@ -149,3 +150,20 @@ class EnemyData():
         self.enemyInfo.add(EnemyMana(self))
         self.enemyInfo.add(EnemyLife(self))
         self.enemyInfo.add(Enemy())
+
+class GameInfoDisplay():
+    def __init__(self):
+        self.gameInfo = pygame.sprite.Group()
+    
+    def createInfo(self):
+        self.gameInfo.add(TurnEndButton())
+
+class TurnEndButton(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.imgpath = "img/arrow.png"
+        self.pos = (1080, 390)    #位置x,y
+        self.size = (178, 82)   #サイズw,h
+        self.rect = pygame.Rect(self.pos, self.size)
+        self.image = pygame.image.load(self.imgpath).convert_alpha()
+        self.image = pygame.transform.scale(self.image, self.size)

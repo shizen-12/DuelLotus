@@ -4,8 +4,8 @@ def saveDeck(deckList):
     with open("save.json", "w") as f:
         json.dump(deckList,f)
 
-def loadDeck():
-    with open("save.json", "r") as f:
+def loadDeck(fileName):
+    with open(fileName, "r") as f:
         deckList = json.load(f)
     return deckList
 

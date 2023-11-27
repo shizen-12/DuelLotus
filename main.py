@@ -4,6 +4,7 @@ from cardData import *
 from info import *
 from deck import *
 from gameMaster import *
+from enemy import*
 
 # Pygameの初期化
 pygame.init()
@@ -27,16 +28,29 @@ background = pygame.image.load('img/bg1.jpg')
 background = pygame.transform.scale(background, (SCREENRECT.size))
 screen.blit(background,(0,0))
 
+#勝利画像
+winImage = pygame.image.load("img/victory.png")
+screen.blit(winImage,(0,0))
+#敗北画像
+loseImage = pygame.image.load("img/lose.png")
+screen.blit(loseImage,(0,0))
+
 #ゲームマスターの作成
 gm = GM()
 gm.battle = True
 # print(pygame.font.get_fonts())
+gData = GameInfoDisplay()
+gData.createInfo()
 
 #プレイヤーとエネミーの作成
 pData = PlayerData()
 pData.createInfo()
 eData = EnemyData()
 eData.createInfo()
+enemyBehavior = EnemyBehavior()
+for i in range(5):
+    drawCard(pData,eData)
+
 
 #マウス座標
 mousePos = (0,0)
@@ -71,13 +85,18 @@ def handOnClick():
             card.select = True
 
 def doubleClickCheck():
-    for card in list(pData.handGroup):  #list(pData.handGroup)で一時的なコピー作成
-        if card.rect.collidepoint(mousePos) and card.select == True:
-            if pData.mana >= card.cost:
-                card.effect(pData,eData)
-                pData.mana -= card.cost
-                pData.handGroup.remove(card)  # 元のリストからカードを削除
-                pData.graveyard.append(card)  # graveyardリストにカードを追加
+    if gm.turn:
+        for card in list(pData.handGroup):  #list(pData.handGroup)で一時的なコピー作成
+            if card.rect.collidepoint(mousePos) and card.select == True:
+                if pData.mana >= card.cost:
+                    card.effect(pData,eData)
+                    pData.mana -= card.cost
+                    pData.handGroup.remove(card)  # 元のリストからカードを削除
+                    pData.graveyard.append(card)  # graveyardリストにカードを追加
+        for ginfo in gData.gameInfo:
+            if isinstance(ginfo, TurnEndButton):
+                if ginfo.rect.collidepoint(mousePos):
+                    gm.turnEnd()
 
 timer = 0
 dt = 0
@@ -87,17 +106,19 @@ dt = 0
 while gm.battle == True:
     # 背景描画
     screen.blit(background,(0,0))
+    # screen.blit(winImage,(0,0))
 
     # スプライトの更新と描画
     handSort()
     pData.handGroup.update()
-    # changeLayer()
     pData.handGroup.draw(screen)
     handHighlightedDraw()
     pData.playerInfo.update(pData)
     pData.playerInfo.draw(screen)
     eData.enemyInfo.update(eData)
     eData.enemyInfo.draw(screen)
+    gData.gameInfo.update()
+    gData.gameInfo.draw(screen)
 
     # Surfaceの内容をディスプレイに反映
     pygame.display.get_surface().blit(screen, (0, 0))
@@ -105,6 +126,19 @@ while gm.battle == True:
 
     # フレームレートを設定（1秒間に30回処理）
     clock.tick(60)
+
+    turnChange = gm.turnCheck()
+
+    #ゲーム進行状況チェック
+    if (turnChange):
+        gm.turnEndProcess(pData,eData) #それぞれのマナオーバー分を削除
+        if gm.turn == True:     #自分のターンになったら
+            gm.turnStartPlayer(pData,eData)
+        else:
+            print("敵のターンの開始")
+            gm.turnStartEnemy(pData,eData)
+            enemyBehavior.thinking(pData,eData,gm)
+    gm.judgeGame(pData,eData)   #勝敗チェックだけど毎秒やる意味なくない？
 
     # イベント処理
     for event in pygame.event.get():
@@ -122,15 +156,10 @@ while gm.battle == True:
                 screen = pygame.display.set_mode(SCREENRECT.size,pygame.FULLSCREEN)
             else:
                 screen = pygame.display.set_mode(SCREENRECT.size)
-            
         if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
             break
         if event.key == pygame.K_LSHIFT:
             drawCard(pData,eData)
-        if event.key == pygame.K_LEFT:
-            print(event.key)
-        if event.key == pygame.K_RIGHT:
-            print(event.key)
 
     # ここからマウス系処理
     if event.type == MOUSEMOTION:
@@ -161,6 +190,20 @@ while gm.battle == True:
         handOnClick()
         mouse_clicked = False
 
+
+
+print("バトルを抜けた")
+while gm.win == True:
+    print("勝利処理")
+    screen.blit(winImage,(0,0))
+    clock.tick(60)
+    pygame.display.get_surface().blit(screen, (0, 0))
+    pygame.display.flip()
+
+if gm.lose:
+    while True:
+        clock.tick(60)
+        screen.blit(loseImage,(0,0))
 #while文を抜けたらゲーム終了
 pygame.quit()
 sys.exit()

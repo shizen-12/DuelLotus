@@ -33,7 +33,7 @@ def Brainstorm(pData,eData):
 
 FireBall_text = "2点ダメージ"
 def FireBall(pData,eData):
-    damagePtE(eData,2)
+    damagePtE(eData,10)
 
 LifeRoad_text = "5点回復"
 def LifeRoad(pData,eData):
