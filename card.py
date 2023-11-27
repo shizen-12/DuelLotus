@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import asyncio
 
 class Card(pygame.sprite.Sprite):
     highlight = False
@@ -13,7 +14,7 @@ class Card(pygame.sprite.Sprite):
         self.name = name
         self.cost = cost
         self.text = text
-        self.effect = effect
+        self.cardEffect = effect
         self.imgpath = imgpath
         self.width = 170
         self.height = 237
@@ -27,10 +28,33 @@ class Card(pygame.sprite.Sprite):
         self.rect = Rect(self.x, self.y, self.width, self.height)   #spriteの表示位置
         self.vx = 0     #x軸の移動速度
         self.vy = 0     #y軸の移動速度
+        # self.effectSprite = pygame.image.load("img/fireballsheet.png")
+        # # スプライトシートから個々のフレームを取得
+        # self.frames = []
+        # spriteXvalue = 5
+        # spriteYvalue = 3
+        # spriteMount = 14
+        # frame_width = self.effectSprite.get_width() / spriteXvalue
+        # frame_height = self.effectSprite.get_height() / spriteYvalue
+        # for j in range(spriteYvalue):
+        #     for i in range(spriteXvalue):
+        #         if j * spriteXvalue + i >= spriteMount:
+        #             break
+        #         frame = self.effectSprite.subsurface((i * frame_width, 0, frame_width, frame_height))
+        #         self.frames.append(frame)
+        # # アニメーションフレームのインデックス
+        # self.frame_index = 0
+        # self.effectImage = self.frames[self.frame_index]
+        # self.effect_playing = False
+        # self.effect_done = False
         self.update()
-        
-    def effect(self):
-        # effect関数の実装
+
+    def effect(self,pData,eData):
+        # self.effect_playing = True
+        self.cardEffect(pData,eData)
+        # self.effectDraw()
+
+    def cardEffect(self):
         pass
 
     def highlighted(self):
@@ -74,6 +98,34 @@ class Card(pygame.sprite.Sprite):
         blit_position = (self.image.get_width()*0.55 - text_surface_center[0],self.image.get_height()*0.07-text_surface_center[1])
         self.image.blit(self.text_surface, blit_position)
         
+        # if self.effect_playing and not self.effect_done:
+        #     self.effectDraw()
+        #     if self.frame_index == 0:
+        #         self.effect_done = True
+        # if self.frame_index > 0:
+        #     self.draw()
+        #     print("どうやったらここ入れるの")
+        # self.effectDraw()
+
+    # def effectDraw(self):
+    #     # print("エフェクトのドローに入ったよ")
+    #     if self.effect_playing == False:
+    #         return
+    #     if self.frame_index < len(self.frames):
+    #         self.effectImage = self.frames[self.frame_index]
+    #         pygame.display.get_surface().blit(self.effectImage,(500,150))
+    #         # self.frame_index = (self.frame_index + 1) % len(self.frames)
+    #         self.frame_index += 1
+    #         print(f"indexは{self.frame_index}")
+    #         print(f"self.effect_playingは{self.effect_playing}")
+    #         print(f"どうなってんの")
+    #     if self.frame_index == len(self.frames):
+    #         print(f"indexは{self.frame_index}")
+    #         self.effect_playing = False
+    #         return
+
+
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+

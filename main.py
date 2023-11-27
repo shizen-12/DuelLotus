@@ -5,14 +5,24 @@ from info import *
 from deck import *
 from gameMaster import *
 from enemy import*
+import asyncio
 
 # Pygameの初期化
 pygame.init()
-
+# 音声ファイルのロード
+pygame.mixer.init()
+soundTurnEnd = pygame.mixer.Sound("se/Accent03-3.mp3")
+soundVictory = pygame.mixer.Sound("se/victory.mp3")
+soundVictory.set_volume(0.5)
+bgmStart = pygame.mixer.Sound("bgm/kuuhaku to seizyaku.mp3")
+bgmStart.set_volume(0.5)
+bgmBattle = pygame.mixer.Sound("bgm/ketui wo muneni.mp3")
+bgmBattle.set_volume(0.5)
 # 画面の初期化
 SCREENRECT = pygame.Rect(0, 0, 1280, 720)
 screen = pygame.display.set_mode(SCREENRECT.size)  #最終表示用のsurface
-screen = pygame.Surface(SCREENRECT.size)           #拡大縮小対応用の描画領域、ここに描画する
+# screen = pygame.Surface(SCREENRECT.size)           #拡大縮小対応用の描画領域、ここに描画する
+
 
 # タイトルの設定
 pygame.display.set_caption("DuelLotus")
@@ -30,10 +40,12 @@ screen.blit(background,(0,0))
 
 #勝利画像
 winImage = pygame.image.load("img/victory.png")
-screen.blit(winImage,(0,0))
+
 #敗北画像
 loseImage = pygame.image.load("img/lose.png")
-screen.blit(loseImage,(0,0))
+# 開始時イメージ
+startImage = pygame.image.load("img/start.jpg")
+
 
 #ゲームマスターの作成
 gm = GM()
@@ -97,12 +109,44 @@ def doubleClickCheck():
             if isinstance(ginfo, TurnEndButton):
                 if ginfo.rect.collidepoint(mousePos):
                     gm.turnEnd()
+                    soundTurnEnd.play()
 
 timer = 0
 dt = 0
 
+# c1 = createCard(1)
+# c1.frame_index = 0
+# c1.effect_playing = True
+# 
+# 開始画面
+startflag = True
+bgmStart.play()
+while startflag:
+    screen.blit(startImage,(0,0))
+    clock.tick(30)
+    # pygame.display.get_surface().blit(screen, (0, 0))
+    pygame.display.flip()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F1:
+            # F1キーが押されたら全画面表示とウィンドウ表示を切り替え
+                fullscreen = not fullscreen
+                if fullscreen:
+                    screen = pygame.display.set_mode(SCREENRECT.size,pygame.FULLSCREEN)
+                else:
+                    screen = pygame.display.set_mode(SCREENRECT.size)
+            if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
+                print("esc押された")
+                pygame.quit()
+                sys.exit()
+            if event.key == pygame.K_RETURN:
+                startflag = False
+bgmStart.stop()
 
-
+bgmBattle.play()
 while gm.battle == True:
     # 背景描画
     screen.blit(background,(0,0))
@@ -111,6 +155,7 @@ while gm.battle == True:
     # スプライトの更新と描画
     handSort()
     pData.handGroup.update()
+    # c1.effectDraw()
     pData.handGroup.draw(screen)
     handHighlightedDraw()
     pData.playerInfo.update(pData)
@@ -119,13 +164,15 @@ while gm.battle == True:
     eData.enemyInfo.draw(screen)
     gData.gameInfo.update()
     gData.gameInfo.draw(screen)
+    effectSpriteGroup.update()
+    effectSpriteGroup.draw(screen)
 
     # Surfaceの内容をディスプレイに反映
-    pygame.display.get_surface().blit(screen, (0, 0))
+    # pygame.display.get_surface().blit(screen, (0, 0))
     pygame.display.flip()
 
     # フレームレートを設定（1秒間に30回処理）
-    clock.tick(60)
+    clock.tick(30)
 
     turnChange = gm.turnCheck()
 
@@ -186,40 +233,70 @@ while gm.battle == True:
     if timer >= 0.25:
         timer = 0
 
-    dt = clock.tick(60) / 1000  #1Fごとに16msくらい0.016くらい加算されるよ
+    dt = clock.tick(30) / 1000  #1Fごとに16msくらい0.016くらい加算されるよ
 
     if mouse_clicked:
         handOnClick()
         mouse_clicked = False
 
+bgmBattle.stop()
+
+
 
 
 print("バトルを抜けた")
-while gm.win == True:
-    # print("勝利処理")
-    screen.blit(winImage,(0,0))
-    clock.tick(60)
-    pygame.display.get_surface().blit(screen, (0, 0))
-    pygame.display.flip()
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_F1:
-            # F1キーが押されたら全画面表示とウィンドウ表示を切り替え
-                fullscreen = not fullscreen
-                if fullscreen:
-                    screen = pygame.display.set_mode(SCREENRECT.size,pygame.FULLSCREEN)
-                else:
-                    screen = pygame.display.set_mode(SCREENRECT.size)
-            if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
-                print("esc押された")
+if gm.win:
+    soundVictory.play()
+    while gm.win == True:
+        # print("勝利処理")
+        screen.blit(winImage,(0,0))
+        clock.tick(30)
+        # pygame.display.get_surface().blit(screen, (0, 0))
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.key == pygame.K_LSHIFT:
-                drawCard(pData,eData)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F1:
+                # F1キーが押されたら全画面表示とウィンドウ表示を切り替え
+                    fullscreen = not fullscreen
+                    if fullscreen:
+                        screen = pygame.display.set_mode(SCREENRECT.size,pygame.FULLSCREEN)
+                    else:
+                        screen = pygame.display.set_mode(SCREENRECT.size)
+                if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
+                    print("esc押された")
+                    pygame.quit()
+                    sys.exit()
+                if event.key == pygame.K_LSHIFT:
+                    drawCard(pData,eData)
 if gm.lose:
-    while True:
-        clock.tick(60)
+    soundVictory.play()
+    while gm.lose == True:
+        # print("勝利処理")
         screen.blit(loseImage,(0,0))
+        clock.tick(30)
+        # pygame.display.get_surface().blit(screen, (0, 0))
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F1:
+                # F1キーが押されたら全画面表示とウィンドウ表示を切り替え
+                    fullscreen = not fullscreen
+                    if fullscreen:
+                        screen = pygame.display.set_mode(SCREENRECT.size,pygame.FULLSCREEN)
+                    else:
+                        screen = pygame.display.set_mode(SCREENRECT.size)
+                if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
+                    print("esc押された")
+                    pygame.quit()
+                    sys.exit()
+                if event.key == pygame.K_LSHIFT:
+                    drawCard(pData,eData)
 #while文を抜けたらゲーム終了
 pygame.quit()
 sys.exit()

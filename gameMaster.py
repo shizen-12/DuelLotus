@@ -1,5 +1,7 @@
 import pygame
 from cardEffects import drawCard
+# 音声ファイルのロード
+pygame.mixer.init()
 
 class GM():
     def __init__(self):
