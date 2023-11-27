@@ -157,7 +157,9 @@ while gm.battle == True:
             else:
                 screen = pygame.display.set_mode(SCREENRECT.size)
         if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
-            break
+            # break
+            pygame.quit()
+            sys.exit()
         if event.key == pygame.K_LSHIFT:
             drawCard(pData,eData)
 
@@ -194,12 +196,26 @@ while gm.battle == True:
 
 print("バトルを抜けた")
 while gm.win == True:
-    print("勝利処理")
+    # print("勝利処理")
     screen.blit(winImage,(0,0))
     clock.tick(60)
     pygame.display.get_surface().blit(screen, (0, 0))
     pygame.display.flip()
-
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F1:
+            # F1キーが押されたら全画面表示とウィンドウ表示を切り替え
+                fullscreen = not fullscreen
+                if fullscreen:
+                    screen = pygame.display.set_mode(SCREENRECT.size,pygame.FULLSCREEN)
+                else:
+                    screen = pygame.display.set_mode(SCREENRECT.size)
+            if event.key == pygame.K_ESCAPE:  # ESCキーが押されているかチェック
+                print("esc押された")
+                pygame.quit()
+                sys.exit()
+            if event.key == pygame.K_LSHIFT:
+                drawCard(pData,eData)
 if gm.lose:
     while True:
         clock.tick(60)
