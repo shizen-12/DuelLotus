@@ -63,11 +63,13 @@ effectFire = effectSprite("img/fireballsheet.png",5,3,14,enemyX,enemyY)
 effectCure = effectSprite("img/cure.png",5,2,10,playerX,playerY)
 effectDraw = effectSprite("img/recovery_A.png",5,3,13,libraryX,libraryY)
 effectMana = effectSprite("img/attackBurst.png",5,3,15,playerX,playerY)
+effectEFire = effectSprite("img/fireballsheet.png",5,3,14,playerX,playerY)
 
 effectSpriteGroup.add(effectFire)
 effectSpriteGroup.add(effectCure)
 effectSpriteGroup.add(effectDraw)
 effectSpriteGroup.add(effectMana)
+effectSpriteGroup.add(effectEFire)
 
 
 
@@ -114,6 +116,17 @@ FireBall_text = "3点ダメージ"
 def FireBall(pData,eData):
     damagePtE(eData,3)
     effectFire.effectPlaying = True
+def eFireBall(pData,eData):
+    damageEtP(pData,3)
+    effectEFire.effectPlaying = True
+def eFireBallTriple(pData,eData):
+    damageEtP(pData,3)
+    effectEFire.effectPlaying = True
+    damageEtP(pData,3)
+    effectEFire.effectPlaying = True
+    damageEtP(pData,3)
+    effectEFire.effectPlaying = True
+    soundDmg.play()
 
 LifeRoad_text = "5点回復"
 def LifeRoad(pData,eData):

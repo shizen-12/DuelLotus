@@ -13,11 +13,22 @@ class EnemyBehavior():
             self.library.append(createCard(n))
     def thinking(self,pData,eData,gm):
         # 行動パターンをいくつかの要素に分けて判断
-        while eData.mana > 0:
-            self.action(pData,eData,1)
-        if eData.mana <= 0:
-            print("gm.turnEnd()を呼び出します")
-            gm.turnEnd()
+        enemyPlayable = True
+        while enemyPlayable:
+            # self.action(pData,eData,1)
+            print("ループに入った")
+            for card in self.library:
+                print("for文に入った")
+                if eData.mana >= card.cost:
+                    print("if文に入った")
+                    card.effect(pData,eData)
+                    eData.mana -= card.cost
+                else:
+                    enemyPlayable = False
+                    print("enemyPlayableがFalseになった")
+        # if eData.mana <= 0:
+        #     print("gm.turnEnd()を呼び出します")
+        gm.turnEnd()
 
 
     def action(self,pData,eData,num):

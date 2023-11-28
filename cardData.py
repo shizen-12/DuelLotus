@@ -7,8 +7,8 @@ cards = [
     {'id': 2, 'name': 'Brainstorm', 'cost': 1, 'text': Brainstorm_text ,'effect': Brainstorm, 'img':'img/magicitem.png'},
     {'id': 3, 'name': 'FireBall', 'cost': 2, 'text': FireBall_text ,'effect': FireBall, 'img':'img/fireball.png'},
     {'id': 4, 'name': 'LifeRoad', 'cost': 3, 'text': LifeRoad_text ,'effect': LifeRoad, 'img':'img/liferoad.png'},
-
-
+    {'id': 5, 'name': 'eFireBall', 'cost': 2, 'text': FireBall_text ,'effect': eFireBall, 'img':'img/fireball.png'},
+    {'id': 6, 'name': 'eFireBallTriple', 'cost': 4, 'text': FireBall_text ,'effect': eFireBallTriple, 'img':'img/fireball.png'},
 
 ]
 
