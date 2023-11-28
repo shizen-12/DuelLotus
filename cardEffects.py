@@ -133,3 +133,8 @@ def LifeRoad(pData,eData):
     pData.life += 5
     soundGainLife.play()
     effectCure.effectPlaying = True
+
+Lightning_text = "5点ダメージ"
+def Lightning(pData,eData):
+    damageEtP(pData,5)
+    effectFire.effectPlaying = True
