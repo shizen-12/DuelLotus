@@ -136,5 +136,5 @@ def LifeRoad(pData,eData):
 
 Lightning_text = "5点ダメージ"
 def Lightning(pData,eData):
-    damageEtP(pData,5)
+    damagePtE(pData,5)
     effectFire.effectPlaying = True
