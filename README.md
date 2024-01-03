@@ -1,0 +1,1 @@
+Python Pygamesを用いたPvEのカードゲーム
